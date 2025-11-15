@@ -47,7 +47,9 @@ export const orderResolvers = {
     // Get order by ID
     getOrderById: async (_, { _id }) => {
       try {
-        const order = await Order.findById(_id).populate("items.productId").lean();
+        const order = await Order.findById(_id)
+          .populate("items.productId")
+          .lean();
         if (!order) return null;
 
         return {
@@ -81,15 +83,22 @@ export const orderResolvers = {
     },
 
     // Get orders with pagination
-    getOrdersWithPagination: async (_, { page, limit, pagination, keyword, status }) => {
+    getOrdersWithPagination: async (
+      _,
+      { page, limit, pagination, keyword, status }
+    ) => {
       try {
         const query = { $and: [] };
 
         if (keyword && keyword.trim() !== "") {
           query.$and.push({
             $or: [
-              { "shippingInfo.name": { $regex: keyword.trim(), $options: "i" } },
-              { "shippingInfo.email": { $regex: keyword.trim(), $options: "i" } },
+              {
+                "shippingInfo.name": { $regex: keyword.trim(), $options: "i" },
+              },
+              {
+                "shippingInfo.email": { $regex: keyword.trim(), $options: "i" },
+              },
             ],
           });
         }
@@ -105,7 +114,10 @@ export const orderResolvers = {
           limit: limit || 10,
           customLabels: paginationLabel,
           pagination,
-          populate: { path: "items.productId", select: "productName imageUrl price category" },
+          populate: {
+            path: "items.productId",
+            select: "productName imageUrl price category",
+          },
           lean: true,
         };
 
@@ -159,7 +171,8 @@ export const orderResolvers = {
         const orderItems = await Promise.all(
           input.items.map(async (item) => {
             const product = await Product.findById(item.productId);
-            if (!product) throw new Error(`Product ${item.productId} not found`);
+            if (!product)
+              throw new Error(`Product ${item.productId} not found`);
             return {
               productId: product._id,
               quantity: item.quantity,
@@ -168,7 +181,10 @@ export const orderResolvers = {
           })
         );
 
-        const totalPrice = orderItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+        const totalPrice = orderItems.reduce(
+          (sum, i) => sum + i.price * i.quantity,
+          0
+        );
 
         const newOrder = new Order({
           userId: input.userId,
@@ -199,7 +215,8 @@ export const orderResolvers = {
       try {
         const order = await Order.findById(orderId);
         if (!order) throw new Error("Order not found");
-        if (order.status !== "Pending") throw new Error("Only pending orders can be cancelled");
+        if (order.status !== "Pending")
+          throw new Error("Only pending orders can be cancelled");
 
         order.status = "Cancelled";
         await order.save();
@@ -210,50 +227,48 @@ export const orderResolvers = {
       }
     },
 
-  
     // ✅ Update order status safely
-updateOrderStatus: async (_, { _id, status }) => {
-  try {
-    const order = await Order.findById(_id);
-    if (!order) return ResponseMessage(false, "Order not found");
+    updateOrderStatus: async (_, { _id, status }) => {
+      try {
+        const order = await Order.findById(_id);
+        if (!order) return ResponseMessage(false, "Order not found");
 
-    const validTransitions = {
-      Pending: ["Accepted", "Cancelled"],
-      Accepted: ["Processing", "Cancelled"],
-      Processing: ["Delivered", "Cancelled"],
-      Delivered: ["Completed"],
-      Completed: [],
-      Cancelled: [],
-    };
+        const validTransitions = {
+          Pending: ["Accepted", "Cancelled"],
+          Accepted: ["Processing", "Cancelled"],
+          Processing: ["Delivered", "Cancelled"],
+          Delivered: ["Completed"],
+          Completed: [],
+          Cancelled: [],
+        };
 
-    const currentStatus = order.status;
-    const allowed = validTransitions[currentStatus] || [];
-    
-    if (!allowed.includes(status)) {
-      return ResponseMessage(
-        false,
-        `Cannot change from "${currentStatus}" to "${status}".`
-      );
-    }
+        const currentStatus = order.status;
+        const allowed = validTransitions[currentStatus] || [];
 
-    order.status = status;
-    await order.save();
+        if (!allowed.includes(status)) {
+          return ResponseMessage(
+            false,
+            `Cannot change from "${currentStatus}" to "${status}".`
+          );
+        }
 
-    // Optionally send notification
-    await Notification.create({
-      userId: order.userId,
-      orderId: order._id,
-      type: "OrderStatus",
-      message: `Your order has been ${status.toLowerCase()}.`,
-    });
+        order.status = status;
+        await order.save();
 
-    return ResponseMessage(true, `Order updated to ${status}`);
-  } catch (err) {
-    console.error(err);
-    return ResponseMessage(false, "Failed to update order status");
-  }
-},
+        // Optionally send notification
+        await Notification.create({
+          userId: order.userId,
+          orderId: order._id,
+          type: "OrderStatus",
+          message: `Your order has been ${status.toLowerCase()}.`,
+        });
 
+        return ResponseMessage(true, `Order updated to ${status}`);
+      } catch (err) {
+        console.error(err);
+        return ResponseMessage(false, "Failed to update order status");
+      }
+    },
 
     // Delete order
     deleteOrder: async (_, { _id }) => {
@@ -268,18 +283,27 @@ updateOrderStatus: async (_, { _id, status }) => {
     },
 
     // Proceed to checkout (from ecommerce)
-    proceedToCheckout: async (_, { userId, shippingInfo, items, paymentMethod, paymentProof }) => {
+    proceedToCheckout: async (
+      _,
+      { userId, shippingInfo, items, paymentMethod, paymentProof }
+    ) => {
       try {
         if (!userId) throw new Error("User ID is required");
-        if (!shippingInfo?.name || !shippingInfo?.phone || !shippingInfo?.address)
+        if (
+          !shippingInfo?.name ||
+          !shippingInfo?.phone ||
+          !shippingInfo?.address
+        )
           throw new Error("Shipping info required");
         if (!items || !items.length) throw new Error("Cart cannot be empty");
-        if (paymentMethod === "aba" && !paymentProof) throw new Error("ABA proof required");
+        if (paymentMethod === "aba" && !paymentProof)
+          throw new Error("ABA proof required");
 
         const orderItems = await Promise.all(
           items.map(async (item) => {
             const product = await Product.findById(item.productId);
-            if (!product) throw new Error(`Product ${item.productId} not found`);
+            if (!product)
+              throw new Error(`Product ${item.productId} not found`);
             return {
               productId: product._id,
               quantity: item.quantity,
@@ -288,7 +312,10 @@ updateOrderStatus: async (_, { _id, status }) => {
           })
         );
 
-        const totalPrice = orderItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+        const totalPrice = orderItems.reduce(
+          (sum, i) => sum + i.price * i.quantity,
+          0
+        );
 
         const newOrder = new Order({
           userId,
