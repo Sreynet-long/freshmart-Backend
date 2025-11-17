@@ -29,5 +29,6 @@ export const contactTypeDefs = `#graphql
     type Mutation {
         submitContactForm(input: ContactFormInput) : ResponseMessage
         replyContact(contactId: ID!, message: String!): ResponseMessage
+        deleteContact(_id: ID!): ResponseMessage
     }
 `;

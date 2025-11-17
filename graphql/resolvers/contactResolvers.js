@@ -1,6 +1,7 @@
 import { Contact } from "../../models/contacts.js";
 import { ResponseMessage } from "../../function/responseMessage.js";
 import { paginationLabel } from "../../function/paginateFn.js";
+import { Product } from "../../models/products.js";
 
 export const contactResolvers = {
   Query: {
@@ -96,6 +97,17 @@ export const contactResolvers = {
       } catch (error) {
         console.error(error);
         return ResponseMessage(false, "Failed to send reply");
+      }
+    },
+
+    deleteContact: async (_, { _id }) => {
+      try {
+        await Contact.findByIdAndDelete(_id);
+        // const deleteData = await Product.findByIdAndDelete(_id)
+        console.log("deleteContact", Contact);
+        return ResponseMessage(true);
+      } catch (error) {
+        return ResponseMessage(false);
       }
     },
   },
