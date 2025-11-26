@@ -99,10 +99,10 @@ export const productResolvers = {
             false,
             "ទិន្នន័យស្ទួន",
             "Already exist!",
-            null,
+            null
           );
         }
-        
+
         // Save product with Cloudinary image Url
         const product = new Product(input);
         await product.save();
@@ -112,7 +112,12 @@ export const productResolvers = {
         // const createData = await new Product(input).save()
 
         // return ResponseMessage(true);
-        return ResponseMessageCustomizse(true, "បង្កើតទំនិញជោគជ័យ", "Product created successfully!", product)
+        return ResponseMessageCustomizse(
+          true,
+          "បង្កើតទំនិញជោគជ័យ",
+          "Product created successfully!",
+          product
+        );
         // return {
         //     isSuccess: true,
         //     messageKh: "បង្កើតទំនិញជោគជ័យ",
@@ -123,7 +128,12 @@ export const productResolvers = {
         console.log(error);
         // return ResponseMessageCustomizse(false, error.message, error.message);
         // return ResponseMessage(false)
-        return ResponseMessageCustomizse(false, "បង្កើតទំនិញបរាជ័យ", "Product create failed!", null)
+        return ResponseMessageCustomizse(
+          false,
+          "បង្កើតទំនិញបរាជ័យ",
+          "Product create failed!",
+          null
+        );
         // return {
         //     isSuccess: false,
         //     messageKh: "បង្កើតទំនិញបរាជ័យ",
@@ -134,14 +144,13 @@ export const productResolvers = {
     },
     updateProduct: async (_, { _id, input }) => {
       try {
-         const existingProduct = await Product.findById(_id);
+        const existingProduct = await Product.findById(_id);
         if (!existingProduct) {
-
-           return ResponseMessageCustomizse(
+          return ResponseMessageCustomizse(
             false,
             "រកមិនឃើញផលិតផល",
             "Product not found",
-            null,
+            null
           );
           // return {
           //   isSuccess: false,
@@ -152,13 +161,13 @@ export const productResolvers = {
         }
 
         // ✅ Guard: if frontend sends undefined, null, or "", preserve the old value
-          if (
-            input.imagePublicId === undefined ||
-            input.imagePublicId === null ||
-            input.imagePublicId === ""
-          ) {
-            input.imagePublicId = existingProduct.imagePublicId;
-          }
+        if (
+          input.imagePublicId === undefined ||
+          input.imagePublicId === null ||
+          input.imagePublicId === ""
+        ) {
+          input.imagePublicId = existingProduct.imagePublicId;
+        }
 
         // ✅ If a new imagePublicId is provided and different, delete old Cloudinary image
         if (
@@ -167,9 +176,11 @@ export const productResolvers = {
           input.imagePublicId !== existingProduct.imagePublicId
         ) {
           await cloudinary.uploader.destroy(existingProduct.imagePublicId);
-          console.log("Deleted old Cloudinary image:", existingProduct.imagePublicId);
+          console.log(
+            "Deleted old Cloudinary image:",
+            existingProduct.imagePublicId
+          );
         }
-
 
         const updatedProduct = await Product.findByIdAndUpdate(_id, input, {
           new: true,
@@ -178,7 +189,12 @@ export const productResolvers = {
 
         // return ResponseMessage(true);
 
-        return ResponseMessageCustomizse(true, "កែប្រែទំនិញជោគជ័យ", "Product updated successfully!", updatedProduct)
+        return ResponseMessageCustomizse(
+          true,
+          "កែប្រែទំនិញជោគជ័យ",
+          "Product updated successfully!",
+          updatedProduct
+        );
         // return {
         //     isSuccess: true,
         //     messageKh: "កែប្រែទំនិញជោគជ័យ",
@@ -187,7 +203,12 @@ export const productResolvers = {
         // }
       } catch (error) {
         // return ResponseMessage(false);
-        return ResponseMessageCustomizse(false, "កែប្រែទំនិញបរាជ័យ", "Product updated failed!", null)
+        return ResponseMessageCustomizse(
+          false,
+          "កែប្រែទំនិញបរាជ័យ",
+          "Product updated failed!",
+          null
+        );
         // return {
         //     isSuccess: false,
         //     messageKh: "កែប្រែទំនិញបរាជ័យ",
@@ -197,22 +218,44 @@ export const productResolvers = {
       }
     },
 
-async deleteProduct(_, { _id, imagePublicId }) {
+    async deleteProduct(_, { _id, imagePublicId }) {
       try {
+        const existingProduct = await Product.findById(_id);
+        if (!existingProduct) {
+          return ResponseMessageCustomizse(
+            false,
+            "រកមិនឃើញផលិតផល",
+            "Product not found",
+            null
+          );
+        }
         // ✅ First delete the Cloudinary image if publicId exists
-        if (imagePublicId) {
-          await cloudinary.uploader.destroy(imagePublicId);
-          console.log("Deleted Cloudinary image:", imagePublicId);
+        if (existingProduct.imagePublicId) {
+          await cloudinary.uploader.destroy(existingProduct.imagePublicId);
+          console.log(
+            "Deleted Cloudinary image:",
+            existingProduct.imagePublicId
+          );
         }
 
         // ✅ Then delete the product from MongoDB
         const deleted = await Product.findByIdAndDelete(_id);
 
         if (!deleted) {
-           return ResponseMessageCustomizse(false, "រកមិនឃើញផលិតផល", "Product not found", null)
+          return ResponseMessageCustomizse(
+            false,
+            "រកមិនឃើញផលិតផល",
+            "Product not found",
+            null
+          );
         }
 
-        return ResponseMessageCustomizse(true, "ផលិតផលត្រូវបានលុបដោយជោគជ័យ","Product deleted successfully",deleted)
+        return ResponseMessageCustomizse(
+          true,
+          "ផលិតផលត្រូវបានលុបដោយជោគជ័យ",
+          "Product deleted successfully",
+          deleted
+        );
 
         // return {
         //   isSuccess: true,
@@ -221,7 +264,11 @@ async deleteProduct(_, { _id, imagePublicId }) {
         // };
       } catch (err) {
         console.error("Delete error:", err);
-        return ResponseMessageCustomizse(false, "មានបញ្ហាក្នុងការលុប",err.message)
+        return ResponseMessageCustomizse(
+          false,
+          "មានបញ្ហាក្នុងការលុប",
+          err.message
+        );
 
         // return {
         //   isSuccess: false,

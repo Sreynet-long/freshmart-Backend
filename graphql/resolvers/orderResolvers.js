@@ -149,6 +149,7 @@ export const orderResolvers = {
         }));
 
         return orderData;
+        console.log("OrderData:", orderData);
       } catch (err) {
         console.error(err);
         return {
