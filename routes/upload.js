@@ -27,7 +27,7 @@ router.post("/single", upload.single("file"), async (req, res) => {
         else resolve(result);
       }).end(req.file.buffer);
     });
-    console.log("cloudinary upload result:", result);
+    // console.log("cloudinary upload result:", result);
 
     res.json({
       success: true,

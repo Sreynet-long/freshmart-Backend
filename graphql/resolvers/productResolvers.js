@@ -151,12 +151,23 @@ export const productResolvers = {
           // };
         }
 
-        // If a new image is provided, delete the old one
-        if (input.imageUrl && input.imagePublicId && existingProduct.imagePublicId) {
-          if (existingProduct.imagePublicId !== input.imagePublicId) {
-            await cloudinary.uploader.destroy(existingProduct.imagePublicId);
-            console.log("Deleted old Cloudinary image:", existingProduct.imagePublicId);
+        // ✅ Guard: if frontend sends undefined, null, or "", preserve the old value
+          if (
+            input.imagePublicId === undefined ||
+            input.imagePublicId === null ||
+            input.imagePublicId === ""
+          ) {
+            input.imagePublicId = existingProduct.imagePublicId;
           }
+
+        // ✅ If a new imagePublicId is provided and different, delete old Cloudinary image
+        if (
+          input.imagePublicId &&
+          existingProduct.imagePublicId &&
+          input.imagePublicId !== existingProduct.imagePublicId
+        ) {
+          await cloudinary.uploader.destroy(existingProduct.imagePublicId);
+          console.log("Deleted old Cloudinary image:", existingProduct.imagePublicId);
         }
 
 
