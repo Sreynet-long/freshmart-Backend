@@ -106,7 +106,7 @@ export const productResolvers = {
         // Save product with Cloudinary image Url
         const product = new Product(input);
         await product.save();
-        console.log("save product", product);
+        // console.log("save product", product);
         //create
         // await new Product(input).save();
         // const createData = await new Product(input).save()
@@ -185,6 +185,7 @@ export const productResolvers = {
         const updatedProduct = await Product.findByIdAndUpdate(_id, input, {
           new: true,
         });
+        console.log("updated Product:", updatedProduct);
         // const updateData = await Product.findByIdAndUpdate(_id, input)
 
         // return ResponseMessage(true);
@@ -218,7 +219,7 @@ export const productResolvers = {
       }
     },
 
-    async deleteProduct(_, { _id, imagePublicId }) {
+    async deleteProduct(_, { _id , imagePublicId}) {
       try {
         const existingProduct = await Product.findById(_id);
         if (!existingProduct) {
@@ -229,26 +230,28 @@ export const productResolvers = {
             null
           );
         }
-        // ✅ First delete the Cloudinary image if publicId exists
-        if (existingProduct.imagePublicId) {
-          await cloudinary.uploader.destroy(existingProduct.imagePublicId);
-          console.log(
-            "Deleted Cloudinary image:",
-            existingProduct.imagePublicId
+        const publicIdToDelete = imagePublicId || existingProduct.imagePublicId;
+        // Always delete the Cloudinary image if product has a publicId
+        if (publicIdToDelete) {
+          console.log("Deleting Cloudinary image:", publicIdToDelete);
+          const result = await cloudinary.uploader.destroy(
+            publicIdToDelete,
+            { resource_type: "image" }
           );
+          console.log("Cloudinary destroy result:", result);
         }
-
+        console.log("Deleting:", publicIdToDelete);
         // ✅ Then delete the product from MongoDB
         const deleted = await Product.findByIdAndDelete(_id);
-
-        if (!deleted) {
-          return ResponseMessageCustomizse(
-            false,
-            "រកមិនឃើញផលិតផល",
-            "Product not found",
-            null
-          );
-        }
+        console.log("deletedProduct:", deleted);
+        // if (!deleted) {
+        //   return ResponseMessageCustomizse(
+        //     false,
+        //     "រកមិនឃើញផលិតផល",
+        //     "Product not found",
+        //     null
+        //   );
+        // }
 
         return ResponseMessageCustomizse(
           true,
@@ -270,7 +273,7 @@ export const productResolvers = {
           err.message
         );
 
-        // return {
+        // return { 
         //   isSuccess: false,
         //   messageEn: err.message,
         //   messageKh: "មានបញ្ហាក្នុងការលុប",

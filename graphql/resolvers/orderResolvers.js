@@ -103,7 +103,7 @@ export const orderResolvers = {
           });
         }
 
-        if (status && status.trim() !== "") {
+        if (typeof status === "string" && status.trim() !== "") {
           query.$and.push({ status: status.trim() });
         }
 
@@ -147,9 +147,9 @@ export const orderResolvers = {
             )
             .filter(Boolean),
         }));
-
-        return orderData;
         console.log("OrderData:", orderData);
+        return orderData;
+        
       } catch (err) {
         console.error(err);
         return {
