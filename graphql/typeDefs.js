@@ -6,6 +6,7 @@ import {reviewTypeDefs} from "./typeDefs/reviewTypeDefs.js";
 import { orderTypeDefs } from "./typeDefs/orderTypeDefs.js";
 import { dashboardTypeDefs } from "./typeDefs/dashboardTypeDefs.js";
 import {reportTypeDefs} from "./typeDefs/reportTypeDefs.js";
+import { notificationTypeDefs } from "./typeDefs/notificationTypeDefs.js";
 
 export const typeDefs= [
   globalTypeDefs,
@@ -16,4 +17,5 @@ export const typeDefs= [
   orderTypeDefs,
   dashboardTypeDefs,
   reportTypeDefs,
+  notificationTypeDefs,
 ];

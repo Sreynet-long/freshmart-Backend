@@ -1,5 +1,6 @@
 import { contactResolvers } from "./resolvers/contactResolvers.js";
 import { dashboardResolvers } from "./resolvers/dashboardResolvers.js";
+import { notificationResolvers } from "./resolvers/notification.js";
 import { orderResolvers } from "./resolvers/orderResolvers.js";
 import {productResolvers} from "./resolvers/productResolvers.js"
 import { reportResolvers } from "./resolvers/reportResolvers.js";
@@ -16,6 +17,7 @@ export const resolvers = {
     ...orderResolvers.Query,
     ...dashboardResolvers.Query,
     ...reportResolvers.Query,
+    ...notificationResolvers.Query,
   },
   Mutation: {
     ...productResolvers.Mutation,
@@ -23,5 +25,6 @@ export const resolvers = {
     ...userResolvers.Mutation,
     ...reviewResolvers.Mutation,
     ...orderResolvers.Mutation,
+    ...notificationResolvers.Mutation,
   },
 };

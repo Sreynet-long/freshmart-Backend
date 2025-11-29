@@ -4,7 +4,7 @@ import { Notification } from "../../models/notification.js";
 const pubsub = new PubSub();
 const NEW_ORDER_TOPIC = "NEW_ORDER_TOPIC";
 
-export const resolvers = {
+export const notificationResolvers = {
   Query: {
     getNotifications: async (_, { page = 1, limit = 10, unreadOnly = false }) => {
       const options = {

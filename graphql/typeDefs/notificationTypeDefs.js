@@ -1,8 +1,8 @@
 // schema/notification.js
 
 
-export const contactTypeDefs = `#graphql
-  type Notification {
+export const notificationTypeDefs = `#graphql
+type Notification {
   id: ID!
   message: String!
   orderId: ID
