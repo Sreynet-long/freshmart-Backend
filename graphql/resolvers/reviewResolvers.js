@@ -11,11 +11,11 @@ export const reviewResolvers = {
   Query: {
     async getReviewsByProduct(_, { productId }) {
       try {
-        console.log("Getting reviews for product:", productId);
+        // console.log("Getting reviews for product:", productId);
         const reviews = await Review.find({ productId })
           .populate("productId")
           .sort({ createdAt: -1 });
-          console.log("Reviews found:", reviews.length);
+        // console.log("Reviews found:", reviews.length);
         return reviews;
       } catch (error) {
         console.error("Error fetching reviews:", error.message);
@@ -28,7 +28,7 @@ export const reviewResolvers = {
       { page, limit, pagination, keyword }
     ) => {
       try {
-        console.log("Fetching reviews with pagination...");
+        // console.log("Fetching reviews with pagination...");
 
         const options = {
           page: page || 1,
@@ -42,6 +42,15 @@ export const reviewResolvers = {
         return reviewData;
       } catch (error) {
         console.error("Failed to get products", error);
+        return {
+          data: [],
+          paginator: {
+            totalDocs: 0,
+            totalPages: 0,
+            currentPage: page || 1,
+            perPage: limit || 10,
+          },
+        };
       }
     },
   },

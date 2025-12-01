@@ -104,7 +104,7 @@ export const contactResolvers = {
       try {
         await Contact.findByIdAndDelete(_id);
         // const deleteData = await Product.findByIdAndDelete(_id)
-        console.log("deleteContact", Contact);
+        // console.log("deleteContact", Contact);
         return ResponseMessage(true);
       } catch (error) {
         return ResponseMessage(false);

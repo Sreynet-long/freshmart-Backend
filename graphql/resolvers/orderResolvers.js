@@ -147,9 +147,8 @@ export const orderResolvers = {
             )
             .filter(Boolean),
         }));
-        console.log("OrderData:", orderData);
+        // console.log("OrderData:", orderData);
         return orderData;
-        
       } catch (err) {
         console.error(err);
         return {

@@ -176,16 +176,16 @@ export const productResolvers = {
           input.imagePublicId !== existingProduct.imagePublicId
         ) {
           await cloudinary.uploader.destroy(existingProduct.imagePublicId);
-          console.log(
-            "Deleted old Cloudinary image:",
-            existingProduct.imagePublicId
-          );
+          // console.log(
+          //   "Deleted old Cloudinary image:",
+          //   existingProduct.imagePublicId
+          // );
         }
 
         const updatedProduct = await Product.findByIdAndUpdate(_id, input, {
           new: true,
         });
-        console.log("updated Product:", updatedProduct);
+        // console.log("updated Product:", updatedProduct);
         // const updateData = await Product.findByIdAndUpdate(_id, input)
 
         // return ResponseMessage(true);
@@ -219,7 +219,7 @@ export const productResolvers = {
       }
     },
 
-    async deleteProduct(_, { _id , imagePublicId}) {
+    async deleteProduct(_, { _id, imagePublicId }) {
       try {
         const existingProduct = await Product.findById(_id);
         if (!existingProduct) {
@@ -233,17 +233,16 @@ export const productResolvers = {
         const publicIdToDelete = imagePublicId || existingProduct.imagePublicId;
         // Always delete the Cloudinary image if product has a publicId
         if (publicIdToDelete) {
-          console.log("Deleting Cloudinary image:", publicIdToDelete);
-          const result = await cloudinary.uploader.destroy(
-            publicIdToDelete,
-            { resource_type: "image" }
-          );
-          console.log("Cloudinary destroy result:", result);
+          // console.log("Deleting Cloudinary image:", publicIdToDelete);
+          const result = await cloudinary.uploader.destroy(publicIdToDelete, {
+            resource_type: "image",
+          });
+          // console.log("Cloudinary destroy result:", result);
         }
-        console.log("Deleting:", publicIdToDelete);
+        // console.log("Deleting:", publicIdToDelete);
         // ✅ Then delete the product from MongoDB
         const deleted = await Product.findByIdAndDelete(_id);
-        console.log("deletedProduct:", deleted);
+        // console.log("deletedProduct:", deleted);
         // if (!deleted) {
         //   return ResponseMessageCustomizse(
         //     false,
@@ -273,7 +272,7 @@ export const productResolvers = {
           err.message
         );
 
-        // return { 
+        // return {
         //   isSuccess: false,
         //   messageEn: err.message,
         //   messageKh: "មានបញ្ហាក្នុងការលុប",
