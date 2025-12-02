@@ -23,6 +23,8 @@ export const orderTypeDefs = `#graphql
     paymentMethod: String
     paymentProof: String
     createdAt: String
+    isHidden: Boolean
+    isDeleted: Boolean
   }
 
   type OrderPaginator {
@@ -66,7 +68,7 @@ export const orderTypeDefs = `#graphql
   }
 
   type Query {
-    getOrders(userId: ID!): [Order]
+    getOrders(userId: ID!, filterHidden: Boolean): [Order]
     getOrderById(_id: ID!): Order
     getOrdersWithPagination(
       page: Int
@@ -78,6 +80,7 @@ export const orderTypeDefs = `#graphql
   }
 
   type Mutation {
+    hideOrder(orderId: ID!): Order
     createOrder(input: OrderInput!): ResponseMessage
     cancelOrder(orderId: ID!): Order
     updateOrderStatus(_id: ID!, status: String!): ResponseMessage

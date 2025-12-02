@@ -58,6 +58,7 @@ type DeleteProductResponse {
 }
 
 type Query {
+  searchProducts(query: String!, category: String, limit: Int, page: Int): [Product!]
   getProductsByCategory(category: Category!): [Product!]!
   getAllproducts: [Product]
   getProductById(_id: ID!): Product

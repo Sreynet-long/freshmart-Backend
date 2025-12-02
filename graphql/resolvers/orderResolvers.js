@@ -335,5 +335,19 @@ export const orderResolvers = {
         return ResponseMessage(false, err.message || "Failed to checkout");
       }
     },
+    hideOrder: async (_, {orderId}) => {
+      try {
+        const order = await order.findById(orderId);
+        if (!order) return ResponseMessage(false, "Order not found!")
+        
+        order.isHidden = true;
+        await order.save();
+        console.log("order:", order);
+        return order;
+      } catch (error) {
+        console.error(error);
+        return ResponseMessage(false, "failed to hide order!")
+      }
+    }
   },
 };

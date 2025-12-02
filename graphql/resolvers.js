@@ -1,6 +1,6 @@
 import { contactResolvers } from "./resolvers/contactResolvers.js";
 import { dashboardResolvers } from "./resolvers/dashboardResolvers.js";
-import { notificationResolvers } from "./resolvers/notification.js";
+import { notificationResolvers } from "./resolvers/notificationResolvers.js";
 import { orderResolvers } from "./resolvers/orderResolvers.js";
 import {productResolvers} from "./resolvers/productResolvers.js"
 import { reportResolvers } from "./resolvers/reportResolvers.js";

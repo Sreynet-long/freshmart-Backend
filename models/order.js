@@ -28,6 +28,8 @@ const OrderSchema = new mongoose.Schema(
     status: { type: String, default: "Pending" },
     paymentMethod: { type: String, default: "cash" }, // added
     paymentProof: { type: String }, // Base64 image
+    isHidden: {type: Boolean, default: false}, 
+    isDeleted: {type: Boolean , default: false},
   },
   { timestamps: true }
 );

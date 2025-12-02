@@ -18,6 +18,20 @@ export const productResolvers = {
     //     }
     //   },
 
+    searchProducts: async (_, {query, category, limit, page}) => {
+      const filter = {
+        productName:  { $regex: query, $options: "i" } 
+      };
+      if ( category && category !== "ALL" ){
+          filter.category = category;
+      }
+      const skip = (page - 1) * limit;
+      const products = await Product.find(filter).skip(skip).limit(limit).sort({createdAt: -1});
+
+      return products;
+    },
+
+
     getProductsByCategory: async (_, { category }) => {
       if (!category) return [];
       return await Product.find({ category });
@@ -279,5 +293,6 @@ export const productResolvers = {
         // };
       }
     },
+    
   },
 };

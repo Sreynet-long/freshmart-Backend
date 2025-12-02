@@ -36,7 +36,7 @@ export const notificationResolvers = {
     markAllNotificationsRead: async () => {
       const res = await Notification.updateMany(
         { isRead: false },
-        { isRead: true }
+        { isRead: true },
       );
       return res.modifiedCount || 0;
     }

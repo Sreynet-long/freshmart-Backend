@@ -66,7 +66,7 @@ async function Server() {
 
   // MongoDB connection
   await mongoose
-    .connect(
+    .connect( 
       "mongodb+srv://Fresh-mart-ecommerce:sXJ0hsxzCrkyuJ7B@cluster0.iltfauk.mongodb.net/fresh-mart-db"
     )
     .then(() => console.log("DB Connected"))
